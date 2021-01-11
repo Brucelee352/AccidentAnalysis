@@ -52,19 +52,16 @@ agg_accidents$DayofWeek <- factor(agg_accidents$DayofWeek, levels= c("Sunday",
                                   "Monday", "Tuesday", "Wednesday", "Thursday", 
                                          "Friday", "Saturday"))
 
-agg_accidents[order(agg_accidents$DayofWeek), ]
+# -----------------
+#
+# Can use this snippet to assign order to Days of the Week
+# agg_accidents[order(agg_accidents$DayofWeek), ]
 
 # If needed, check structure of inconsistencies with classes 
 str(agg_accidents)
 
 ##-----------------
 ##Recode variables 
-
-agg_accidents$sum_Alcohol = ifelse(agg_accidents$sum_Alcohol == 
-                                     "0", "No", "Yes")
-
-agg_accidents$sum_Fatal = ifelse(agg_accidents$sum_Fatal == 
-                                   "0", "No", "Yes")
 
 agg_accidents$Accidents <-  agg_accidents$sum_Accidents
 agg_accidents$Fatal <- agg_accidents$sum_Fatal
@@ -74,17 +71,19 @@ agg_accidents$sum_Accidents <- NULL
 agg_accidents$sum_Fatal <- NULL
 agg_accidents$sum_Alcohol <- NULL
 
+agg_accidents$Alcohol = as.factor(x = agg_accidents$Alcohol)
+
+agg_accidents$Fatal = as.factor(x = agg_accidents$Fatal)
+
 ##-----------------
 ##Plots
 
 accidentplot <- ggplot(data = agg_accidents, aes(x = Month.Year, 
                            y = Accidents)) + 
-  geom_point(position = "jitter", aes(color = Alcohol, 
-                                      size = Fatal)) + 
-  geom_smooth(method = "lm", se = FALSE) + 
-  scale_fill_discrete() +
+  geom_point(position = "jitter", aes(size = Fatal, color = Alcohol)) + 
+  geom_smooth(method = "lm", se = FALSE) +
   labs(title = "Accidents by Year and Type", x = "Year", 
-       y = "Number of Accidents") +
+       y = "Number of Accidents", size = "Fatalities") +
   theme_bw()
 
 accidentplot2 <- ggplot(agg_accidents, aes(x = Month.Year, y = Accidents)) + 
